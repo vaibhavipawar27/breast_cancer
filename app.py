@@ -16,21 +16,7 @@ class_mapping = {
 # Function to load the combined model
 @st.cache(allow_output_mutation=True)
 def load_model():
-    # URLs for model parts on GitHub
-    base_url = "https://github.com/m3mentomor1/Breast-Cancer-Image-Classification/raw/main/splitted_model/"
-    model_parts = [f"{base_url}model.h5.part{i:02d}" for i in range(1, 35)]
-
-    # Download and combine model parts
-    model_bytes = b''
-    for part_url in model_parts:
-        response = requests.get(part_url)
-        model_bytes += response.content
-
-    # Create an in-memory HDF5 file
-    with h5py.File(BytesIO(model_bytes), 'r') as hf:
-        # Load the combined model
-        model = tf.keras.models.load_model(hf)
-    
+    model = tf.keras.models.load_model("model.h5")
     return model
 
 # Function to preprocess and make predictions
@@ -46,6 +32,9 @@ def predict(image, model):
 
     # Get the predicted class
     predicted_class = class_mapping[np.argmax(predictions[0])]
+    print("Predictions:", predictions)
+    print("Predicted class index:", np.argmax(predictions[0]))
+
     return predicted_class
 
 # Streamlit app
